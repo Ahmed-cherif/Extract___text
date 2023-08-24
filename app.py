@@ -8,7 +8,7 @@ app = Flask(__name__)
 # Charger les DataFrames depuis les fichiers CSV
 ecoles_df = pd.read_csv('ecoles_dataset.csv')
 titres_df = pd.read_csv('titres_dataset.csv')
-
+ 
 # Fonction pour extraire les informations
 def extract_info(line):
     annee_match = re.search(r"\b\d{4}\b", line)
