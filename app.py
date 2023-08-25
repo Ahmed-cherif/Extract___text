@@ -2,7 +2,7 @@ import re
 import pandas as pd
 from flask import Flask, request, jsonify
 
-app = Flask(__name__) 
+app = Flask(__name__)
 
 # List of month names
 months = [
@@ -12,7 +12,10 @@ months = [
     "août", "septembre", "octobre", "novembre", "décembre",
     "Janv", "Fév","Fev" "Mars", "Avr", "Mai", "Juin", "Juil", "Août","Aout" "Sept", "Oct", "Nov", "Déc","Dec"
     "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec","janv", "fév", "fev", "mars", "avr", "mai", "juin", "juil", "août", "aout", "sept", "oct", "nov", "déc", "dec",
-    "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"
+    "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec","january", "february", "march", "april", "may", "june", "july",
+    "august", "september", "october", "november", "december","fevrier","JANVIER", "FÉVRIER", "MARS", "AVRIL", "MAI", "JUIN", "JUILLET",
+    "AOÛT", "SEPTEMBRE", "OCTOBRE", "NOVEMBRE", "DÉCEMBRE", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet",
+    "Août", "Septembre", "Octobre", "Novembre", "Décembre","Fevrier","Decembre","Aout"
 ]
 
 # Load DataFrames from CSV files
