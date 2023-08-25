@@ -1,51 +1,3 @@
-"""
-import re
-import pandas as pd
-from flask import Flask, request, jsonify
- 
-app = Flask(__name__)
-
-# Charger les DataFrames depuis les fichiers CSV
-ecoles_df = pd.read_csv('ecoles_dataset.csv')
-titres_df = pd.read_csv('titres_dataset.csv')
- 
-# Fonction pour extraire les informations
-def extract_info(line):
-    annee_match = re.search(r"\b\d{4}\b", line)
-    annee = annee_match.group(0) if annee_match else None
-
-    # Liste des titres et écoles à partir des DataFrames
-    titres = titres_df['titres'].tolist()
-    ecoles = ecoles_df['ecoles'].tolist()
-
-    titre_match = re.search(rf"\b(?:{'|'.join(re.escape(titre) for titre in titres)})\b", line, re.IGNORECASE)
-    titre = titre_match.group(0) if titre_match else None
-
-    ecole_match = re.search(rf"\b(?:{'|'.join(re.escape(ecole) for ecole in ecoles)})\b", line, re.IGNORECASE)
-    ecole = ecole_match.group(0) if ecole_match else None
-
-    return annee, titre, ecole
-
-@app.route('/extract', methods=['POST']) 
-def extract():
-    data = request.get_json()
-    input_lines = data.get('input_lines', [])
-
-    extracted_info = []
-    for line in input_lines:
-        annee, titre, ecole = extract_info(line)
-        extracted_info.append({
-            'line': line,
-            'annee': annee,
-            'titre': titre,
-            'ecole': ecole
-        })
-
-    return jsonify(extracted_info)
-
-if __name__ == '__main__':
-    app.run(debug=True)
-"""
 import re
 import pandas as pd
 from flask import Flask, request, jsonify
@@ -55,15 +7,19 @@ app = Flask(__name__)
 # List of month names
 months = [
     "January", "February", "March", "April", "May", "June", "July",
-    "August", "September", "October", "November", "December","janvier", "février", "mars", "avril", "mai", "juin", "juillet",
-    "août", "septembre", "octobre", "novembre", "décembre"
+    "August", "September", "October", "November", "December",
+    "janvier", "février", "mars", "avril", "mai", "juin", "juillet",
+    "août", "septembre", "octobre", "novembre", "décembre",
+    "Janv", "Fév","Fev" "Mars", "Avr", "Mai", "Juin", "Juil", "Août","Aout" "Sept", "Oct", "Nov", "Déc","Dec"
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec","janv", "fév", "fev", "mars", "avr", "mai", "juin", "juil", "août", "aout", "sept", "oct", "nov", "déc", "dec",
+    "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"
 ]
 
-# Charger les DataFrames depuis les fichiers CSV
+# Load DataFrames from CSV files
 ecoles_df = pd.read_csv('ecoles_dataset.csv')
 titres_df = pd.read_csv('titres_dataset.csv')
 
-# Fonction pour extraire les informations
+# Function to extract information
 def extract_info(line):
     annee_match = re.search(r"\b\d{4}\b", line)
     annee = annee_match.group(0) if annee_match else None
@@ -71,7 +27,7 @@ def extract_info(line):
     month_match = re.search(rf"\b(?:{'|'.join(re.escape(month) for month in months)})\b", line, re.IGNORECASE)
     month = month_match.group(0) if month_match else None
 
-    # Liste des titres et écoles à partir des DataFrames
+    # Lists of titles and schools from DataFrames
     titres = titres_df['titres'].tolist()
     ecoles = ecoles_df['ecoles'].tolist()
 
@@ -85,10 +41,10 @@ def extract_info(line):
 
 @app.route('/extract', methods=['POST']) 
 def extract():
-    # Obtenir le texte brut de la demande POST
+    # Get raw text from POST request
     input_text = request.data.decode('utf-8')
 
-    # Diviser le texte en lignes
+    # Split text into lines
     input_lines = input_text.split('\n')
 
     extracted_info = []
@@ -96,8 +52,7 @@ def extract():
         annee, month, titre, ecole = extract_info(line)
         extracted_info.append({
             'line': line,
-            'annee': annee,
-            'month': month,
+            'date': f"{month}:{annee}",
             'titre': titre,
             'ecole': ecole
         })
@@ -106,4 +61,3 @@ def extract():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
